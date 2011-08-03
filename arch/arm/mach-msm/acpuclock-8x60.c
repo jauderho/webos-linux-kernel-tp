@@ -52,7 +52,7 @@
  * The PLL hardware is capable of 384MHz to 1536MHz. The L_VALs
  * used for calibration should respect these limits. */
 #define L_VAL_SCPLL_CAL_MIN	0x08 /* =  432 MHz with 27MHz source */
-#define L_VAL_SCPLL_CAL_MAX	0x1C /* = 1512 MHz with 27MHz source */
+#define L_VAL_SCPLL_CAL_MAX	0x21 /* = 1782 MHz with 27MHz source */
 
 #define MAX_VDD_SC		1250000 /* uV */
 #define MAX_AXI			 310500 /* KHz */
@@ -197,6 +197,7 @@ static struct clkctl_l2_speed l2_freq_tbl_v2[] = {
 	[14] = {1134000,  1, 0x15, 1100000, 1200000, 2},
 	[15] = {1188000,  1, 0x16, 1200000, 1200000, 3},
 	[16] = {1404000,  1, 0x1A, 1200000, 1250000, 3},
+	[17] = {1512000,  1, 0x1C, 1200000, 1250000, 3},
 };
 
 #define L2(x) (&l2_freq_tbl_v2[(x)])
@@ -222,6 +223,7 @@ static struct clkctl_acpu_speed acpu_freq_tbl_v2[] = {
   { {1, 1}, 1134000,  ACPU_SCPLL, 0, 0, 1, 0x15, L2(14), 1162500, 0x03006000},
   { {1, 1}, 1188000,  ACPU_SCPLL, 0, 0, 1, 0x16, L2(15), 1187500, 0x03006000},
   { {1, 1}, 1512000,  ACPU_SCPLL, 0, 0, 1, 0x1C, L2(16), 1250000, 0x03006000},
+  { {1, 1}, 1782000,  ACPU_SCPLL, 0, 0, 1, 0x21, L2(16), 1250000, 0x03006000},
   { {0, 0}, 0 },
 };
 /* acpu_freq_tbl row to use when reconfiguring SC/L2 PLLs. */
@@ -759,10 +761,10 @@ static unsigned int __init select_freq_plan(void)
 	l2_freq_tbl_size = ARRAY_SIZE(l2_freq_tbl_v2);
 
 	speed_bin = readl(QFPROM_SPEED_BIN_PRI) & 0xF;
-	if (speed_bin == 0x1)
-		max_khz = 1512000;
-	else
-		max_khz = 1188000;
+//	if (speed_bin == 0x1)
+		max_khz = 1782000;
+//	else
+//		max_khz = 1188000;
 
 	/* Truncate the table based to max_khz. */
 	for (f = acpu_freq_tbl; f->acpuclk_khz != 0; f++) {
